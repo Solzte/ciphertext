@@ -23,6 +23,19 @@ build/
 dist/
 *.egg-info/
 
+# Test / tooling
+.pytest_cache/
+.coverage
+htmlcov/
+
+# C# build output
+csharp/**/bin/
+csharp/**/obj/
+
+# Encrypted artifacts
+*.enc
+*.decrypted
+
 # Environment variables (never commit secrets)
 .env
 .env.*

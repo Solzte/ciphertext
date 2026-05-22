@@ -1,109 +1,153 @@
 # Ciphertext
 
-A simple command-line tool that encrypts plaintext into ciphertext (and decrypts it back) using a password you choose.
+Password-based encryption toolkit for text and files. Includes a Python CLI/GUI/library, automated tests, CI, optional Windows executable build, and a cross-compatible C# port.
 
 ## Features
 
-- Password-based encryption and decryption
-- Secure key derivation with PBKDF2-HMAC-SHA256
-- AES encryption via [Fernet](https://cryptography.io/en/latest/fernet/) (from the `cryptography` library)
-- Base64-encoded output for easy copy and paste
+- Encrypt and decrypt text (base64 output)
+- Encrypt and decrypt any file (`.enc` output)
+- Hidden password input with `getpass`
+- Versioned binary format (`CPT1`) using PBKDF2 + AES-GCM
+- Backward-compatible decryption for legacy Fernet ciphertext
+- Interactive menu, argparse CLI, and Tkinter GUI
+- Cross-compatible Python and C# implementations
+- Pytest suite and GitHub Actions CI
 
 ## Requirements
 
-- Python 3.10 or newer
-- `cryptography` (see `requirements.txt`)
+- Python 3.10+
+- .NET 8 SDK (optional, for the C# port)
 
 ## Installation
 
-1. Clone the repository:
+```bash
+git clone https://github.com/Solzte/ciphertext.git
+cd ciphertext
+python -m venv .venv
+```
 
-   ```bash
-   git clone https://github.com/Solzte/ciphertext.git
-   cd ciphertext
-   ```
+Windows:
 
-2. (Recommended) Create a virtual environment:
+```powershell
+.\.venv\Scripts\Activate.ps1
+pip install -e ".[dev]"
+```
 
-   ```bash
-   python -m venv .venv
-   ```
+macOS / Linux:
 
-   **Windows (PowerShell):**
-
-   ```powershell
-   .\.venv\Scripts\Activate.ps1
-   ```
-
-   **macOS / Linux:**
-
-   ```bash
-   source .venv/bin/activate
-   ```
-
-3. Install dependencies:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
+```bash
+source .venv/bin/activate
+pip install -e ".[dev]"
+```
 
 ## Usage
 
-Run the program:
+### Interactive menu
 
 ```bash
 python encrypt.py
 ```
 
-You will be prompted to:
+### CLI
 
-1. Choose **Encrypt** or **Decrypt**
-2. Enter your password
-3. Enter the text or ciphertext
-
-### Example
-
-```
-========================================
-  Text Encryption Program
-========================================
-
-1) Encrypt (plaintext -> ciphertext)
-2) Decrypt (ciphertext -> plaintext)
-
-Your choice (1 or 2): 1
-Enter your password: my-secret-password
-Text to encrypt: Hello, world!
-
-Ciphertext:
-Aj-K3gZyQOxKs62Vz58gQ2dBQUFBQUJx...
+```bash
+ciphertext encrypt "Hello, world!"
+ciphertext decrypt "CPT1..."
+ciphertext encrypt-file note.txt
+ciphertext decrypt-file note.txt.enc
 ```
 
-Use option **2** with the same password to recover the original text.
+Examples with explicit password:
 
-## How it works
+```bash
+ciphertext encrypt "Secret message" -p my-password
+ciphertext encrypt-file document.pdf -o document.pdf.enc -p my-password
+```
 
-1. A random 16-byte salt is generated for each encryption.
-2. Your password and the salt are used to derive a 256-bit key (PBKDF2, 100,000 iterations).
-3. The plaintext is encrypted with Fernet (symmetric AES).
-4. Salt and ciphertext are combined and encoded as base64.
+If `-p` is omitted, the password is requested securely.
 
-## Security notes
+### GUI
 
-- Keep your password safe. If you lose it, the ciphertext cannot be recovered.
-- Do not commit passwords or `.env` files to version control.
-- This tool is intended for learning and personal use. For production systems, review your threat model and key management practices.
+```bash
+python gui.py
+```
+
+### Library
+
+```python
+from ciphertext import encrypt, decrypt, encrypt_file, decrypt_file
+
+token = encrypt("hello", "password")
+print(decrypt(token, "password"))
+```
+
+## C# port
+
+Build:
+
+```bash
+dotnet build csharp/Ciphertext/Ciphertext.csproj -c Release
+```
+
+Run:
+
+```bash
+dotnet run --project csharp/Ciphertext -- encrypt "Hello"
+dotnet run --project csharp/Ciphertext -- encrypt-file note.txt
+```
+
+The C# version uses the same `CPT1` binary format as Python v2, so encrypted files can be exchanged between both implementations.
+
+## Build a Windows executable
+
+```bash
+pip install pyinstaller
+pyinstaller ciphertext.spec
+```
+
+The GUI executable is created in `dist/Ciphertext.exe`.
+
+## Tests
+
+```bash
+pytest
+```
 
 ## Project structure
 
 ```
 ciphertext/
-├── encrypt.py          # Main CLI application
-├── requirements.txt    # Python dependencies
-├── README.md
-├── LICENSE
-└── .gitignore
+├── src/ciphertext/          # Python package
+│   ├── crypto.py            # Core crypto + file helpers
+│   └── cli.py               # Argparse CLI
+├── csharp/Ciphertext/       # Cross-compatible C# port
+├── tests/                   # Pytest suite
+├── gui.py                   # Tkinter desktop app
+├── encrypt.py               # Backward-compatible entry point
+├── pyproject.toml
+├── requirements.txt
+├── requirements-dev.txt
+├── ciphertext.spec          # PyInstaller config
+└── .github/workflows/ci.yml
 ```
+
+## Format
+
+Current encrypted payloads use this layout:
+
+```
+CPT1 | version(1) | salt(16) | nonce(12) | ciphertext+tag
+```
+
+Text output is base64-encoded. File output is raw binary.
+
+Legacy Fernet ciphertext from v1 can still be decrypted by the Python tool.
+
+## Security notes
+
+- Keep your password safe. Lost passwords cannot be recovered.
+- Do not commit `.env`, secrets, or encrypted files you do not intend to share.
+- This project is for learning and personal use. Review your threat model before production use.
 
 ## License
 
