@@ -1,6 +1,6 @@
 # Ciphertext
 
-Password-based encryption toolkit for text and files. Includes a Python CLI/GUI/library, automated tests, CI, optional Windows executable build, and a cross-compatible C# port.
+Password-based encryption toolkit for text and files. Includes a Python CLI, GUI, library, automated tests, CI, and optional Windows executable build.
 
 ## Features
 
@@ -10,13 +10,11 @@ Password-based encryption toolkit for text and files. Includes a Python CLI/GUI/
 - Versioned binary format (`CPT1`) using PBKDF2 + AES-GCM
 - Backward-compatible decryption for legacy Fernet ciphertext
 - Interactive menu, argparse CLI, and Tkinter GUI
-- Cross-compatible Python and C# implementations
 - Pytest suite and GitHub Actions CI
 
 ## Requirements
 
 - Python 3.10+
-- .NET 8 SDK (optional, for the C# port)
 
 ## Installation
 
@@ -81,23 +79,6 @@ token = encrypt("hello", "password")
 print(decrypt(token, "password"))
 ```
 
-## C# port
-
-Build:
-
-```bash
-dotnet build csharp/Ciphertext/Ciphertext.csproj -c Release
-```
-
-Run:
-
-```bash
-dotnet run --project csharp/Ciphertext -- encrypt "Hello"
-dotnet run --project csharp/Ciphertext -- encrypt-file note.txt
-```
-
-The C# version uses the same `CPT1` binary format as Python v2, so encrypted files can be exchanged between both implementations.
-
 ## Build a Windows executable
 
 ```bash
@@ -120,7 +101,6 @@ ciphertext/
 ├── src/ciphertext/          # Python package
 │   ├── crypto.py            # Core crypto + file helpers
 │   └── cli.py               # Argparse CLI
-├── csharp/Ciphertext/       # Cross-compatible C# port
 ├── tests/                   # Pytest suite
 ├── gui.py                   # Tkinter desktop app
 ├── encrypt.py               # Backward-compatible entry point

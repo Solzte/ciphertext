@@ -28,10 +28,6 @@ dist/
 .coverage
 htmlcov/
 
-# C# build output
-csharp/**/bin/
-csharp/**/obj/
-
 # Encrypted artifacts
 *.enc
 *.decrypted
