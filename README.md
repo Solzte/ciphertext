@@ -11,6 +11,7 @@ Password-based encryption toolkit for text and files. Includes a Python CLI, GUI
 - Backward-compatible decryption for legacy Fernet ciphertext
 - Interactive menu, argparse CLI, and Tkinter GUI
 - Pytest suite and GitHub Actions CI
+- Dependabot and CodeQL security automation
 
 ## Requirements
 
@@ -108,7 +109,11 @@ ciphertext/
 ├── requirements.txt
 ├── requirements-dev.txt
 ├── ciphertext.spec          # PyInstaller config
-└── .github/workflows/ci.yml
+└── .github/
+    ├── dependabot.yml       # Automated dependency updates
+    └── workflows/
+        ├── ci.yml           # Test workflow
+        └── codeql.yml       # Security analysis
 ```
 
 ## Format
