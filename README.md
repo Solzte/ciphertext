@@ -1,6 +1,6 @@
 # Ciphertext
 
-Password-based encryption toolkit for text and files. Includes a Python CLI, GUI, library, automated tests, and optional Windows executable build.
+Password-based encryption toolkit for text and files. Includes a Python CLI, GUI, library, automated tests, CI, and optional Windows executable build.
 
 ## Features
 
@@ -10,7 +10,7 @@ Password-based encryption toolkit for text and files. Includes a Python CLI, GUI
 - Versioned binary format (`CPT1`) using PBKDF2 + AES-GCM
 - Backward-compatible decryption for legacy Fernet ciphertext
 - Interactive menu, argparse CLI, and Tkinter GUI
-- Pytest suite
+- Pytest suite and GitHub Actions CI
 
 ## Requirements
 
@@ -107,7 +107,8 @@ ciphertext/
 ├── pyproject.toml
 ├── requirements.txt
 ├── requirements-dev.txt
-└── ciphertext.spec          # PyInstaller config
+├── ciphertext.spec          # PyInstaller config
+└── .github/workflows/ci.yml
 ```
 
 ## Format
